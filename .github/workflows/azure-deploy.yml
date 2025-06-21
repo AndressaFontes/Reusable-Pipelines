@@ -1,0 +1,47 @@
+# name: Deploy to Azure 
+
+# on:
+#     workflow_call:
+#      secrets:
+#       AZURE_ACR_URL:
+#         description: 'URL do Azure Container Registry'
+#         required: true
+#       AZURE_ACR_LOGIN:
+#         description: 'Login do Azure Container Registry'
+#         required: true
+#       AZURE_ACR_PASS:
+#         description: 'Senha do Azure Container Registry'
+#         required: true
+#       AZURE_APPSERVICE:
+#         description: 'Nome do Azure App Service'
+#         required: true
+#       AZURE_PUBLISH_PROFILE:
+#         description: 'Publish Profile do Azure App Service'
+#         required: true
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0 
+
+#       - name: Login no ACR
+#         run: echo "${{ secrets.AZURE_ACR_PASS }}" | docker login ${{ secrets.AZURE_ACR_URL }} -u ${{ secrets.AZURE_ACR_LOGIN }} --password-stdin
+
+#       - name: Push da imagem
+#         run: |
+#           docker push ${{ secrets.AZURE_ACR_URL }}/org.cicdpipelines.javawebapp:latest
+      
+#       - name: Deploy para Azure App Service
+#         uses: azure/webapps-deploy@v3
+#         with:
+#           app-name: ${{ secrets.AZURE_APPSERVICE }}
+#           slot-name: 'production'
+#           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+#           images: ${{ secrets.AZURE_ACR_URL }}/org.cicdpipelines.javawebapp:latest
+
+

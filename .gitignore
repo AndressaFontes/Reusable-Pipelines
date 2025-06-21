@@ -1,0 +1,56 @@
+# Compilados e binários
+*.class
+*.jar
+*.war
+*.ear
+
+# Diretórios de build
+/target/
+/build/
+
+# Logs
+*.log
+
+# IDEs
+# IntelliJ IDEA
+/.idea/
+/*.iml
+/out/
+/*.ipr
+/*.iws
+
+# Eclipse
+/.classpath
+/.project
+/.settings/
+
+# VS Code
+.vscode/
+
+# Arquivos temporários do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de dependências locais
+/.mvn/wrapper/maven-wrapper.jar
+
+# Arquivos gerados pelo Maven Wrapper
+.mvn/wrapper/maven-wrapper.properties
+
+# Arquivos de configuração do Gradle
+.gradle/
+build/
+
+# Arquivos temporários e caches
+*.tmp
+*.temp
+
+# Arquivos de testes / relatórios
+/surefire-reports/
+/failsafe-reports/
+
+# Arquivos de cobertura de teste
+/coverage/
+
+# Configurações específicas
+*.class

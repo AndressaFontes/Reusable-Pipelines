@@ -1,0 +1,87 @@
+name: Java Reusable Pipeline
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        description: 'Token de autenticação do SonarQube'
+        required: true 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Garante que todo o histórico do repositório seja baixado
+
+      - name: Configurar JDK 
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ vars.JAVA_VERSION }}
+
+      - name: Instalar Maven
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: ${{vars.MAVEN_VERSION}}
+
+      - name: Executar testes (unitários e integração)
+        run: mvn clean verify
+
+      - name: Análise com SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn sonar:sonar \
+            -Dsonar.projectKey=${{ github.event.repository.name }} \
+            -Dsonar.organization=${{ github.repository_owner }} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=$SONAR_TOKEN
+
+      - name: Build do projeto (gera JAR)
+        run: mvn package
+
+      - name: Mostrar localização do artefato gerado
+        run: |
+          echo "Arquivos gerados:"
+          find target -type f \( -name "*.jar" -o -name "*.war" \)
+
+      - name: Configurar distribuição do Maven
+        run: |
+          sed -i '/<\/project>/i \
+          <distributionManagement>\n\
+            <repository>\n\
+              <id>github</id>\n\
+              <url>https://maven.pkg.github.com/${{github.repository_owner}}/${{ github.event.repository.name }}</url>\n\
+            </repository>\n\
+          </distributionManagement>' pom.xml
+
+      - name: Configurar Maven settings.xml para GitHub Packages
+        run: |
+          mkdir -p ~/.m2
+          echo "<settings>
+            <servers>
+              <server>
+                <id>github</id>
+                <username>${{ github.actor }}</username>
+                <password>${{ secrets.GITHUB_TOKEN }}</password>
+              </server>
+            </servers>
+          </settings>" > ~/.m2/settings.xml
+
+      - name: Deploy do artefato para o GitHub Packages
+        run: mvn deploy --settings ~/.m2/settings.xml
+        env:
+          AUTH_TOKEN: ${{ secrets.GITHUB.TOKEN }}
+
+      - name: upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-artifacts
+          path: |
+            target/*.jar
+     
+
+     

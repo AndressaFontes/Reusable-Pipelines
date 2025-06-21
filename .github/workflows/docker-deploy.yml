@@ -1,0 +1,44 @@
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download artefatos Java
+        uses: actions/download-artifact@v4
+        with:
+          name: java-artifacts
+          path: target/*.jar
+
+      - name: Criar Dockerfile se não existir
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "FROM eclipse-temurin:17-jre-alpine
+          COPY target/*.jar app.jar
+          ENTRYPOINT [\"java\", \"-jar\", \"/app.jar\"]" > Dockerfile
+                    else
+                      echo "Dockerfile já existe, não é necessário criar."  
+                    fi
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest .
+
+      - name: Login no GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest
+          
+      
