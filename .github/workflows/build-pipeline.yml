@@ -65,7 +65,7 @@ jobs:
             <servers>
               <server>
                 <id>github</id>
-                <username>${{ github.actor }}</username>
+                <username>codenestlab</username>
                 <password>${{ secrets.GITHUB_TOKEN }}</password>
               </server>
             </servers>
