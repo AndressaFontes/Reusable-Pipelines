@@ -54,7 +54,7 @@ jobs:
           <distributionManagement>\n\
             <repository>\n\
               <id>github</id>\n\
-              <url>https://maven.pkg.github.com/${{github.repository_owner}}/${{ github.event.repository.name }}</url>\n\
+              <url>https://maven.pkg.github.com/codenestlab/GithubActionsStudy</url>\n\
             </repository>\n\
           </distributionManagement>' pom.xml
 
