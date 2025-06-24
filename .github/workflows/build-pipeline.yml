@@ -3,6 +3,12 @@ name: Java Reusable Pipeline
 on:
   workflow_call:
     secrets:
+      AUTH_TOKEN:
+        description: 'Token de autenticação para o GitHub Packages'
+        required: true
+      GITHUB_TOKEN:
+        description: 'Token de autenticação do GitHub'
+        required: true
       SONAR_TOKEN:
         description: 'Token de autenticação do SonarQube'
         required: true 
