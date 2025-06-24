@@ -49,15 +49,12 @@ jobs:
           find target -type f \( -name "*.jar" -o -name "*.war" \)
 
       - name: Configurar distribuição do Maven
-        env:
-          OWNER: ${{ github.repository_owner }}
-          REPO: ${{ github.event.repository.name }}
         run: |
           sed -i '/<\/project>/i \
           <distributionManagement>\n\
             <repository>\n\
               <id>github</id>\n\
-              <url>https://maven.pkg.github.com/${OWNER}/${REPO}</url>\n\
+              <url>https://maven.pkg.github.com/${{github.repository_owner}}/${{ github.event.repository.name }}</url>\n\
             </repository>\n\
           </distributionManagement>' pom.xml
 
