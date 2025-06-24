@@ -48,16 +48,6 @@ jobs:
           echo "Arquivos gerados:"
           find target -type f \( -name "*.jar" -o -name "*.war" \)
 
-      - name: Configurar distribuição do Maven
-        run: |
-          sed -i '/<\/project>/i \
-          <distributionManagement>\n\
-            <repository>\n\
-              <id>github</id>\n\
-              <url>https://maven.pkg.github.com/${{github.repository_owner}}/${{ github.event.repository.name }}</url>\n\
-            </repository>\n\
-          </distributionManagement>' pom.xml
-
       - name: Configurar Maven settings.xml para GitHub Packages
         run: |
           mkdir -p ~/.m2
