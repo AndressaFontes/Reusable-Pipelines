@@ -66,7 +66,7 @@ jobs:
               <server>
                 <id>github</id>
                 <username>${{ github.repository_owner }}</username>
-                <password>${{ secrets.GITHUB_TOKEN }}</password>
+                <password>${{ secrets.GITHUB_AUTH_TOKEN }}</password>
               </server>
             </servers>
           </settings>" > ~/.m2/settings.xml
